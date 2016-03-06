@@ -19,13 +19,11 @@ book:
 
 then we can get the values in it as following.
 
-```
+```bash
 $ cat my-list.yaml | ./get_yaml_value "/fruit/apple/amount" 
 10
-
 $ cat my-list.yaml | ./get_yaml_value "/book/cooking-about"
 not-ready-yet
-
 $ cat my-list.yaml | ./get_yaml_value "/book/story/harry-potter"
 $ # we got nothing here
 ```
