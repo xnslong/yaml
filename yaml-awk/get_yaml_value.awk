@@ -42,4 +42,4 @@ decide_yaml_level($1) <= checked_level {
     }
 }
 
-END { print result; }
+END { if (result != "") { print result; } }

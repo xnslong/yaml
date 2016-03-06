@@ -1,6 +1,6 @@
 #!/bin/bash
 
-YAML_AWK_DIR="$(cd "$(dirname "$0")"; pwd)/$(basename "yaml-util")"
+YAML_AWK_DIR="$(cd "$(dirname "$0")/.."; pwd)/$(basename "yaml-awk")"
 
 function non_visible_spliter {
     echo @|tr @ '\034'
@@ -49,3 +49,5 @@ function get_yaml_value {
         -f $YAML_AWK_DIR/get_yaml_value.awk 
 }
 
+# main method
+get_yaml_value "$@"
