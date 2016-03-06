@@ -1,0 +1,51 @@
+#!/bin/bash
+
+YAML_AWK_DIR="$(cd "$(dirname "$0")"; pwd)/$(basename "yaml-util")"
+
+function non_visible_spliter {
+    echo @|tr @ '\034'
+}
+
+# parse line to components: prefix_white_space_count, key, value. 
+# they are seperated by `non_visible_spliter`s
+function yaml_line_to_components {
+    awk -F":" -v vf="`non_visible_spliter`" \
+        -f $YAML_AWK_DIR/yaml-common.awk \
+        -f $YAML_AWK_DIR/yaml_line_to_components.awk 
+}
+
+# get the yaml value. it supports 2 parameters, the 1st the path of the
+# expected item in the yaml, and the 2nd the path node spliter used by
+# the path parameter, which will take slash ("/") as default.
+#
+# for the following yaml.
+#
+# fruit:
+#   apple:
+#     number: 5
+#   orange:
+#     number: 4   <---- suppose we want to pick the value.
+#     
+# then the path we expect is: 
+#
+#   /fruit/orange/number
+#
+# or when any valid spliter given, say (#), then the path we expect is
+#
+#   #fruit#orange#number
+#
+function get_yaml_value {
+    yaml_path="$1"
+
+    spliter="$2"
+    [ "$spliter" = "" ] && spliter="/"
+
+    yaml_line_to_components | \
+        awk -F"`non_visible_spliter`" \
+        -v AWKPATH="$YAML_AWK_DIR" \
+        -v path="$yaml_path" \
+        -v sp="$spliter" \
+        -f $YAML_AWK_DIR/yaml-common.awk \
+        -f $YAML_AWK_DIR/get_yaml_value.awk 
+}
+
